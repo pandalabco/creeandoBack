@@ -14,8 +14,8 @@ const brandSchema = mongoose.Schema(
       trim: true,
     },
     logo: {
-      type: Array,
-      default: [],
+      type: String,
+      default: '',
       required: true,
     },
     banner: {
@@ -77,6 +77,11 @@ const brandSchema = mongoose.Schema(
       index: true,
     },
     brandAdress: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    link: {
       type: String,
       required: true,
       index: true,

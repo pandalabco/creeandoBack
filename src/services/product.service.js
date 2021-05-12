@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { Brand, User } = require('../models');
+const { User, Brand, Product } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -7,9 +7,12 @@ const ApiError = require('../utils/ApiError');
  * @param {Object} userBody
  * @returns {Promise<User>}
  */
-const createBrand = async (userBody) => {
-  const brand = await Brand.create(userBody);
-  return brand;
+const createProduct = async (userBody) => {
+  const product = await Product.create(userBody);
+  const brand = await Brand.findById(product.brand);
+  brand.products.push(product.id);
+  brand.save();
+  return product;
 };
 
 /**
@@ -21,9 +24,9 @@ const createBrand = async (userBody) => {
  * @param {number} [options.page] - Current page (default = 1)
  * @returns {Promise<QueryResult>}
  */
-const queryBrands = async (filter, options) => {
-  const brands = await Brand.paginate(filter, options);
-  return brands;
+const queryProducts = async (filter, options) => {
+  const products = await Product.paginate(filter, options);
+  return products;
 };
 
 /**
@@ -31,10 +34,14 @@ const queryBrands = async (filter, options) => {
  * @param {ObjectId} id
  * @returns {Promise<User>}
  */
-const getBrandById = async (id) => {
-  return Brand.findById(id);
+const getProductById = async (id) => {
+  return Product.findById(id);
 };
 
+const getProductByBrand = async (id) => {
+  const products = await Product.find({ brand: id });
+  return products;
+};
 /**
  * Get user by email
  * @param {string} email
@@ -51,7 +58,7 @@ const getUserByEmail = async (email) => {
  * @returns {Promise<User>}
  */
 const updateUserById = async (userId, updateBody) => {
-  const user = await getBrandById(userId);
+  const user = await getProductById(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -69,7 +76,7 @@ const updateUserById = async (userId, updateBody) => {
  * @returns {Promise<User>}
  */
 const deleteUserById = async (userId) => {
-  const user = await getBrandById(userId);
+  const user = await getProductById(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -78,9 +85,10 @@ const deleteUserById = async (userId) => {
 };
 
 module.exports = {
-  createBrand,
-  queryBrands,
-  getBrandById,
+  createProduct,
+  queryProducts,
+  getProductById,
+  getProductByBrand,
   getUserByEmail,
   updateUserById,
   deleteUserById,

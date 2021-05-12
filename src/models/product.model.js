@@ -3,12 +3,16 @@ const { toJSON, paginate } = require('./plugins');
 
 const productSchema = mongoose.Schema(
   {
-    title: {
+    name: {
       type: String,
       trim: true,
       required: true,
       maxlength: 32,
       text: true,
+    },
+    top: {
+      type: Boolean,
+      default: false,
     },
     slug: {
       type: String,
@@ -16,7 +20,7 @@ const productSchema = mongoose.Schema(
       lowercase: true,
       index: true,
     },
-    description: {
+    shortDesc: {
       type: String,
       required: true,
       maxlength: 2000,
@@ -63,7 +67,12 @@ const productSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
-    images: {
+    pictures: {
+      type: Array,
+      required: true,
+      default: ['https://cree-ando.com/wp-content/uploads/2021/04/Cree-Ando-logo-1.png'],
+    },
+    smPictures: {
       type: Array,
       required: true,
       default: ['https://cree-ando.com/wp-content/uploads/2021/04/Cree-Ando-logo-1.png'],
@@ -83,15 +92,14 @@ const productSchema = mongoose.Schema(
       enum: ['Única', '"XS"', 'S', 'M', 'L', 'XL'],
       default: 'Única',
     },
-    ratings: [
-      {
-        star: Number,
-        postedBy: {
-          type: mongoose.Schema.ObjectId,
-          ref: 'User',
-        },
-      },
-    ],
+    ratings: {
+      type: Number,
+      default: 0,
+    },
+    reviews: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

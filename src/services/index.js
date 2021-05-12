@@ -10,6 +10,7 @@ module.exports.muService = require('./mu.service');
 module.exports.orderService = require('./order.service');
 module.exports.paymentService = require('./payment.service');
 module.exports.purchaseService = require('./purchase.service');
+module.exports.productService = require('./product.service');
 module.exports.shippmentService = require('./shippment.service');
 module.exports.subService = require('./sub.service');
 module.exports.wenjoyService = require('./wenjoy.service');

@@ -5,23 +5,24 @@ const catchAsync = require('../utils/catchAsync');
 const { brandService } = require('../services');
 
 const createBrand = catchAsync(async (req, res) => {
-  const user = await brandService.createUser(req.body);
-  res.status(httpStatus.CREATED).send(user);
+  const newBrand = { ...req.body, admins: [req.user.id]};
+  const brand = await brandService.createBrand(newBrand);
+  res.status(httpStatus.CREATED).json({ code: httpStatus.CREATED, message: 'Success: Brand created', data: brand });
 });
 
-const getUsers = catchAsync(async (req, res) => {
+const getBrands = catchAsync(async (req, res) => {
   const filter = pick(req.query, ['name', 'role']);
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
-  const result = await brandService.queryUsers(filter, options);
-  res.send(result);
+  const result = await brandService.queryBrands(filter, options);
+  res.status(httpStatus.OK).json({ code: httpStatus.OK, message: 'Success: All brands', data: result });
 });
 
-const getUser = catchAsync(async (req, res) => {
-  const user = await brandService.getUserById(req.params.userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+const getBrand = catchAsync(async (req, res) => {
+  const brand = await brandService.getBrandById(req.query.ID);
+  if (!brand) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Brand not found');
   }
-  res.send(user);
+  res.status(httpStatus.OK).json({ code: httpStatus.OK, message: 'Success: All brands', data: brand });
 });
 
 const updateUser = catchAsync(async (req, res) => {
@@ -36,8 +37,8 @@ const deleteUser = catchAsync(async (req, res) => {
 
 module.exports = {
   createBrand,
-  getUsers,
-  getUser,
+  getBrands,
+  getBrand,
   updateUser,
   deleteUser,
 };
