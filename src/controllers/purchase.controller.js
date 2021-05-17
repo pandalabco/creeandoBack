@@ -4,7 +4,7 @@ const { purchaseService, wenjoyService, emailService } = require('../services');
 
 const createPurchase = catchAsync(async (req, res) => {
   // 1. Get wenjoy url.
-  const wenjoy = await wenjoyService.generatePaymentLink();
+  const wenjoy = await wenjoyService.generatePaymentLink(req.user, req.body);
   // 2. Create Purchase
   const purchase = await purchaseService.createPurchase(wenjoy, req.user, req.body);
   // 3. Send Emails to Customer, Cree-ando & Brands.

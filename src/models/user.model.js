@@ -11,6 +11,11 @@ const userSchema = mongoose.Schema(
       required: true,
       trim: true,
     },
+    lastName: {
+      type: String,
+      default: '',
+      trim: true,
+    },
     email: {
       type: String,
       required: true,
@@ -58,6 +63,10 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    crearMarca: {
+      type: Boolean,
+      default: false,
+    },
     picture: {
       type: String,
       default: 'https://cree-ando.com/wp-content/uploads/2021/04/Cree-Ando-logo-1.png',
@@ -97,6 +106,18 @@ const userSchema = mongoose.Schema(
         default: [],
       },
     ],
+    phone: {
+      type: Number,
+      default: '',
+    },
+    idType: {
+      type: Number,
+      default: 1,
+    },
+    idDoc: {
+      type: String,
+      default: '',
+    },
   },
   {
     timestamps: true,
