@@ -7,6 +7,10 @@ const paymentSchema = mongoose.Schema(
       type: String,
       default: '',
     },
+    purchase_link: {
+      type: String,
+      default: '',
+    },
     purchase_description: {
       type: String,
       default: '',
@@ -45,6 +49,10 @@ const paymentSchema = mongoose.Schema(
         default: [],
       },
     ],
+    payedBy: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,

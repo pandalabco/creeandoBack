@@ -6,7 +6,8 @@ const router = express.Router();
 
 router.get('/allProducts', productController.getProducts);
 router.post('/newProduct', auth('getUsers'), productController.createProduct);
-router.get('/allProductsByBrand', auth('getUsers'), productController.getProductByBrand);
-router.get('/productsById', auth('getUsers'), productController.getProductById);
+router.get('/allProductsByBrand', productController.getProductByBrand);
+router.get('/productsById', productController.getProductById);
+router.get('/coordinadora', productController.coordinadora);
 
 module.exports = router;

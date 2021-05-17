@@ -1,4 +1,5 @@
 const httpStatus = require('http-status');
+const soap = require('soap');
 const { User } = require('../models');
 const ApiError = require('../utils/ApiError');
 
@@ -13,6 +14,27 @@ const createUser = async (userBody) => {
   }
   const user = await User.create(userBody);
   return user;
+};
+
+const cooCotizarCiudades = async () => {
+  const url = 'https://sandbox.coordinadora.com/ags/1.5/server.php';
+  const args = {};
+  soap
+    .createClientAsync(url)
+    .addHttpHeader('Accept-Encoding', `gzip,deflate`)
+    .addHttpHeader('Content-Type', `text/xml;charset=UTF-8`)
+    .addHttpHeader('SOAPAction', `"https://sandbox.coordinadora.com/ags/1.5/server.php#Cotizador_ciudades"`)
+    .addHttpHeader('Host', `sandbox.coordinadora.com`)
+    .addHttpHeader('Content-Length', `295`)
+    .addHttpHeader('Connection', `Keep-Alive`)
+    .addHttpHeader('User-Agent', `Apache-HttpClient/4.5.2 (Java/15)`)
+    .then((client) => {
+      return client.MyFunctionAsync(args);
+    })
+    .then((result) => {
+      console.log(result);
+    })
+    .catch((err) => console.log(err));
 };
 
 /**
@@ -87,4 +109,5 @@ module.exports = {
   getUserByEmail,
   updateUserById,
   deleteUserById,
+  cooCotizarCiudades,
 };

@@ -1,8 +1,7 @@
 const httpStatus = require('http-status');
 const pick = require('../utils/pick');
-const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
-const { userService, productService } = require('../services');
+const { userService, productService, coordinadoraService } = require('../services');
 
 const createProduct = catchAsync(async (req, res) => {
   const product = await productService.createProduct(req.body);
@@ -36,7 +35,10 @@ const deleteUser = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
-
+const coordinadora = catchAsync(async (req, res) => {
+  coordinadoraService.cooCotizarCiudades();
+  res.status(httpStatus.OK).json({ code: httpStatus.OK, message: 'Success: Product created', data: null });
+});
 
 module.exports = {
   createProduct,
@@ -45,4 +47,5 @@ module.exports = {
   getProductByBrand,
   updateUser,
   deleteUser,
+  coordinadora,
 };

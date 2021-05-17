@@ -35,7 +35,14 @@ const queryUsers = async (filter, options) => {
  * @returns {Promise<User>}
  */
 const getUserById = async (id) => {
-  return User.findById(id);
+  return User.findOne({ _id: id }).populate('admin');
+};
+
+const addBrandAdmin = async (id, userBody) => {
+  const user = await User.findById(id);
+  user.admin.push(userBody.admin);
+  user.save();
+  return user;
 };
 
 /**
@@ -44,7 +51,7 @@ const getUserById = async (id) => {
  * @returns {Promise<User>}
  */
 const getUserByEmail = async (email) => {
-  return User.findOne({ email });
+  return User.findOne({ email }).populate('admin');
 };
 
 /**
@@ -85,6 +92,7 @@ module.exports = {
   queryUsers,
   getUserById,
   getUserByEmail,
+  addBrandAdmin,
   updateUserById,
   deleteUserById,
 };

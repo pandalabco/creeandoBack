@@ -4,8 +4,8 @@ const brandController = require('../../controllers/brand.controller');
 
 const router = express.Router();
 
-router.get('/getAllBrands', auth('getUsers'), brandController.getBrands);
-router.get('/brand', auth('getUsers'), brandController.getBrand);
+router.get('/getAllBrands', brandController.getBrands);
+router.get('/brand', brandController.getBrand);
 router.post('/brand', auth('getUsers'), brandController.createBrand);
 
 module.exports = router;

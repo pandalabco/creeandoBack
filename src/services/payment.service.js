@@ -1,90 +1,29 @@
-const httpStatus = require('http-status');
-const { User } = require('../models');
-const ApiError = require('../utils/ApiError');
+const { Payment, Order, Purchase } = require('../models');
 
-/**
- * Create a user
- * @param {Object} userBody
- * @returns {Promise<User>}
- */
-const createUser = async (userBody) => {
-  if (await User.isEmailTaken(userBody.email)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+const updatePayment = async (userBody) => {
+  const payment = await Payment.findOne({ purchase_id: userBody.purchase_id }).exec();
+  payment.purchase_description = userBody.purchase_description;
+  payment.purchase_current_value = userBody.purchase_current_value;
+  payment.purchase_state = userBody.purchase_state;
+  payment.purchase_signature = userBody.purchase_signature;
+  await payment.save();
+  let newStatus = '';
+  if (userBody.purchase_state === 'PURCHASE_STARTED') {
+    newStatus = 'Confirmando pago';
+  } else if (userBody.purchase_state === 'PURCHASE_PAYMENT') {
+    newStatus = 'Pago parcial, esperando pago completo';
+  } else if (userBody.purchase_state === 'PURCHASE_FINISHED') {
+    newStatus = 'Pago exitoso, alistando producto';
+  } else if (userBody.purchase_state === 'PURCHASE_REJECTED') {
+    newStatus = 'Pago rechazado, esperando pago completo';
   }
-  const user = await User.create(userBody);
-  return user;
-};
-
-/**
- * Query for users
- * @param {Object} filter - Mongo filter
- * @param {Object} options - Query options
- * @param {string} [options.sortBy] - Sort option in the format: sortField:(desc|asc)
- * @param {number} [options.limit] - Maximum number of results per page (default = 10)
- * @param {number} [options.page] - Current page (default = 1)
- * @returns {Promise<QueryResult>}
- */
-const queryUsers = async (filter, options) => {
-  const users = await User.paginate(filter, options);
-  return users;
-};
-
-/**
- * Get user by id
- * @param {ObjectId} id
- * @returns {Promise<User>}
- */
-const getUserById = async (id) => {
-  return User.findById(id);
-};
-
-/**
- * Get user by email
- * @param {string} email
- * @returns {Promise<User>}
- */
-const getUserByEmail = async (email) => {
-  return User.findOne({ email });
-};
-
-/**
- * Update user by id
- * @param {ObjectId} userId
- * @param {Object} updateBody
- * @returns {Promise<User>}
- */
-const updateUserById = async (userId, updateBody) => {
-  const user = await getUserById(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
-  if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  }
-  Object.assign(user, updateBody);
-  await user.save();
-  return user;
-};
-
-/**
- * Delete user by id
- * @param {ObjectId} userId
- * @returns {Promise<User>}
- */
-const deleteUserById = async (userId) => {
-  const user = await getUserById(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
-  await user.remove();
-  return user;
+  const orders = await Order.updateMany({ purchaseId: payment.purchaseId }, { $set: { orderStatus: newStatus } });
+  const purchase = await Purchase.findById(payment.purchaseId);
+  purchase.purchase_state = newStatus;
+  await purchase.save();
+  return { orders, payment };
 };
 
 module.exports = {
-  createUser,
-  queryUsers,
-  getUserById,
-  getUserByEmail,
-  updateUserById,
-  deleteUserById,
+  updatePayment,
 };

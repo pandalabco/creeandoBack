@@ -5,7 +5,7 @@ const purchaseSchema = mongoose.Schema(
   {
     orders: [
       {
-        type: mongoose.Schema.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
         default: [],
       },
@@ -26,8 +26,18 @@ const purchaseSchema = mongoose.Schema(
     ],
     orderStatus: {
       type: String,
+      enum: [
+        'Confirmando pago',
+        'Pago exitoso, alistando producto',
+        'Pago parcial, esperando pago completo',
+        'Pago rechazado, esperando pago completo',
+        'Procesando',
+        'Despachada',
+        'En transito',
+        'Cancelada',
+        'Completada',
+      ],
       default: 'Confirmando pago',
-      enum: ['Confirmando pago', 'Procesando', 'Despachada', 'En transito', 'Cancelada', 'Completada'],
     },
     orderdBy: {
       type: mongoose.Schema.ObjectId,

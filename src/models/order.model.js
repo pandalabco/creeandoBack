@@ -3,17 +3,22 @@ const { toJSON, paginate } = require('./plugins');
 
 const orderSchema = mongoose.Schema(
   {
-    products: [
-      {
-        product: {
-          type: mongoose.Schema.ObjectId,
-          ref: 'Product',
-        },
-        count: Number,
-        color: String,
-        size: String,
-      },
-    ],
+    product: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Product',
+    },
+    purchaseId: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Purchase',
+    },
+    address: {
+      type: String,
+      default: '',
+    },
+    city: {
+      type: String,
+      default: '',
+    },
     payments: [
       {
         type: mongoose.Schema.ObjectId,
@@ -34,8 +39,18 @@ const orderSchema = mongoose.Schema(
     },
     orderStatus: {
       type: String,
+      enum: [
+        'Confirmando pago',
+        'Pago exitoso, alistando producto',
+        'Pago parcial, esperando pago completo',
+        'Pago rechazado, esperando pago completo',
+        'Procesando',
+        'Despachada',
+        'En transito',
+        'Cancelada',
+        'Completada',
+      ],
       default: 'Confirmando pago',
-      enum: ['Confirmando pago', 'Procesando', 'Despachada', 'En transito', 'Cancelada', 'Completada'],
     },
     orderdBy: {
       type: mongoose.Schema.ObjectId,

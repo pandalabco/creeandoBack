@@ -35,6 +35,16 @@ const userSchema = mongoose.Schema(
       },
       private: true, // used by the toJSON plugin
     },
+    city: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    address: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     role: {
       type: String,
       enum: roles,
@@ -44,6 +54,49 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    superAdmin: {
+      type: Boolean,
+      default: false,
+    },
+    picture: {
+      type: String,
+      default: 'https://cree-ando.com/wp-content/uploads/2021/04/Cree-Ando-logo-1.png',
+    },
+    payments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Payment',
+        default: [],
+      },
+    ],
+    admin: [
+      {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: 'Brand',
+        default: [],
+      },
+    ],
+    cart: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Cart',
+        default: [],
+      },
+    ],
+    orders: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order',
+        default: [],
+      },
+    ],
+    shippments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Shippment',
+        default: [],
+      },
+    ],
   },
   {
     timestamps: true,

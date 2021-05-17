@@ -9,7 +9,14 @@ const router = express.Router();
 router
   .route('/')
   .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
-  .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers);
+  .get(auth('user'), validate(userValidation.getUsers), userController.getUsers);
+
+router.get('/me', auth('getUsers'), userController.getMe);
+router.post('/updateMe', auth('getUsers'), userController.updateUser);
+router.post('/updateAnyUser', auth('getUsers'), userController.updateUserById);
+router.get('/getUserByEmail', auth('getUsers'), userController.updateUserByEmail);
+router.get('/getAllUsers', auth('getUsers'), userController.getAllUsers);
+router.post('/addBrandAdmin', auth('getUsers'), userController.addBrandAdmin);
 
 router
   .route('/:userId')
