@@ -24,7 +24,6 @@ const updatePayment = async (userBody) => {
   return { orders, payment };
 };
 
-
 module.exports = {
   updatePayment,
 };
