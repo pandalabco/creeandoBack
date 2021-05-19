@@ -1,4 +1,4 @@
-const { Payment, Order, Purchase, Brand } = require('../models');
+const { Payment, Order, Purchase } = require('../models');
 
 const createPurchase = async (wenjoy, consumer, body) => {
   // 1. Include Fawn.
